@@ -1,0 +1,30 @@
+[
+  {
+    "name":  "${container_name}",
+    "image": "${container_image}",
+    "entryPoint": [],
+    "command": [],
+    "environment": ${container_environment},
+    "essential": true,
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-create-group": "true",
+        "awslogs-group": "${awslogs_group}",
+        "awslogs-region": "${awslogs_region}",
+        "awslogs-stream-prefix": "${awslogs_stream_prefix}"
+      }
+    },
+    "portMappings": [
+      {
+        "containerPort": ${application_port},
+        "hostPort": ${application_port},
+        "protocol": "tcp"
+      }
+    ],
+    "secrets": [],
+    "cpu": 512,
+    "memory": 1024,
+    "networkMode": "awsvpc"
+  }
+]

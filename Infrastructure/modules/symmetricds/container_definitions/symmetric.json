@@ -1,0 +1,29 @@
+[
+  {
+    "name":  "${container_name}",
+    "image": "${container_image}",
+    "entryPoint": [],
+    "command": [],
+    "environment": ${container_environment},
+    "essential": true,
+    "mountPoints": [
+        {
+          "readOnly": null,
+          "containerPath": "/opt/symmetric/engines",
+          "sourceVolume": "conf-engines"
+        }
+      ],    
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-create-group": "true",
+        "awslogs-group": "${awslogs_group}",
+        "awslogs-region": "${awslogs_region}",
+        "awslogs-stream-prefix": "${awslogs_stream_prefix}"
+      }
+    },
+    "cpu": 1024,
+    "memory": 2048,
+    "networkMode": "awsvpc"
+  }
+]

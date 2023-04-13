@@ -1,0 +1,73 @@
+---
+StartAt: Task1
+States:
+  Task1:
+    Type: Task
+    Resource: arn:aws:states:::batch:submitJob.sync
+    Parameters:
+      JobDefinition: "${job_definition}"
+      JobName.$: "$.input.job_name"
+      JobQueue: "${job_queue}"
+    ResultPath:
+    Next: Task2
+  Task2:
+    Type: Parallel
+    End: true
+    Branches:
+    - StartAt: Task2.1
+      States:
+        Task2.1:
+          Type: Task
+          Resource: arn:aws:states:::batch:submitJob.sync
+          Parameters:
+            JobDefinition: "${job_definition}"
+            JobName.$: "$.input.job_name"
+            JobQueue: "${job_queue}"
+          ResultPath:
+          End: true
+    - StartAt: Task2.2
+      States:
+        Task2.2:
+          Type: Parallel
+          End: true
+          Branches:
+          - StartAt: Task2.2.1
+            States:
+              Task2.2.1:
+                Type: Task
+                Resource: arn:aws:states:::batch:submitJob.sync
+                Parameters:
+                  JobDefinition: "${job_definition}"
+                  JobName.$: "$.input.job_name"
+                  JobQueue: "${job_queue}"
+                ResultPath:
+                Next: Task2.2.2
+              Task2.2.2:
+                Type: Task
+                Resource: arn:aws:states:::batch:submitJob.sync
+                Parameters:
+                  JobDefinition: "${job_definition}"
+                  JobName.$: "$.input.job_name"
+                  JobQueue: "${job_queue}"
+                ResultPath:
+                End: true
+          - StartAt: Task2.2.3
+            States:
+              Task2.2.3:
+                Type: Task
+                Resource: arn:aws:states:::batch:submitJob.sync
+                Parameters:
+                  JobDefinition: "${job_definition}"
+                  JobName.$: "$.input.job_name"
+                  JobQueue: "${job_queue}"
+                ResultPath:
+                Next: Task2.2.4
+              Task2.2.4:
+                Type: Task
+                Resource: arn:aws:states:::batch:submitJob.sync
+                Parameters:
+                  JobDefinition: "${job_definition}"
+                  JobName.$: "$.input.job_name"
+                  JobQueue: "${job_queue}"
+                ResultPath:
+                End: true

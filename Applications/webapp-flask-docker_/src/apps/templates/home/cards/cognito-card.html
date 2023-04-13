@@ -1,0 +1,16 @@
+<div class="card">
+    <div class="card-body p-3">
+        <h5 class="card-title">AWS Cognito + SAML IDP</h5>
+        <h6 class="card-subtitle mb-2 text-muted">SAML Authentication</h6>
+        <p class="card-text">The <a
+               href="https://flask.palletsprojects.com/en/2.2.x/">Flask</a> application allows to initiate the
+            login flow by either calling the </code><a href="/login">/login</a> endpoint or by calling any protected
+            path in the application. AWS Cognito handles the User's login and is connected to the corporate Azure AD. It
+            is important to note that the application will implement the authorization flow (as described in <a
+               href="https://docs.aws.amazon.com/cognito/latest/developerguide/authorization-endpoint.html">authorization-endpoint</a>)
+            and will then use the retrieved <code>access_token</code> to call the backend service.
+        </p>
+        <a href="{{ config.AWS_CONSOLE_BASE_URL }}/cognito/v2/idp/user-pools" class="card-link">Open the AWS Cognito
+            Console</a>
+    </div>
+</div>

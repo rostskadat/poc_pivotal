@@ -1,0 +1,5 @@
+requests==2.28.1
+Jinja2==3.1.2
+xmltodict==0.13.0
+oracledb
+python-jose==3.3.0

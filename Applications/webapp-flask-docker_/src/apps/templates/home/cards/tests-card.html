@@ -1,0 +1,13 @@
+<div class="card">
+    <div class="card-body p-3">
+        <h5 class="card-title">Automated Integration Tests</h5>
+        <h6 class="card-subtitle mb-2 text-muted">High Reliability</h6>
+        <p class="card-text">The integration tests are articulated around a Step Function triggered by the Blue Green
+            deployment hook. This Step Function will enable the Integration Test Cognito User and then launch a AWS
+            Batch job. This batch job is a simple docker container that uses <a
+               href="https://www.selenium.dev/">Selenium</a> to test the webapp. It logs in and then do a simple
+            navigation.
+        </p>
+        <a href="{{ config.AWS_CONSOLE_BASE_URL }}/states/home" class="card-link">Open the AWS Step Function Console</a>
+    </div>
+</div>

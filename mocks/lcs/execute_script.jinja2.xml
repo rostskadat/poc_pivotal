@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<command xmlns="urn:schemas-pivotal-com/LifecycleServer51">
+    <systemName>{{system_name}}</systemName>
+    <loginType>Active Client</loginType>
+    <executeScript>
+        <formName>{{form_name}}</formName>
+        <methodName>{{method_name}}</methodName>
+        <commandParameters>
+            <emptyParameter />
+            <emptyParameter />
+            <emptyParameter />
+            <emptyParameter />
+            <emptyParameter />
+            <emptyParameter />
+            {%- for type, value in parameters %}
+            {% if type == 'string' %}<stringParameter>{{ value }}</stringParameter>{% endif -%}
+            {% if type == 'integer' %}<integerParameter>{{ value }}</integerParameter>{% endif -%}
+            {% if type == 'binary' %}<binaryParameter>{{ value }}</binaryParameter>{% endif -%}
+            {% if type == 'boolean' %}<booleanParameter>{{ value }}</booleanParameter>{% endif -%}
+            {% if type == 'date' %}<dateParameter>{{ value }}</dateParameter>{% endif -%}
+            {% if type == 'float' %}<floatParameter>{{ value }}</floatParameter>{% endif -%}
+            {% if type == 'timeInstant' %}<timeInstantParameter>{{ value }}</timeInstantParameter>{% endif -%}
+            {% endfor %}
+        </commandParameters>
+    </executeScript>
+</command>

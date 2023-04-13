@@ -1,0 +1,17 @@
+<div class="card">
+    <div class="card-body p-3">
+        <h5 class="card-title">ECS + Microservice</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Microservice Backend</h6>
+        <p class="card-text">The <a
+               href="https://flask.palletsprojects.com/en/2.2.x/">Flask</a> microservice application is also
+            deployed behind an API GW and is protected by an authorizer that checks the <code>access_token</code>
+            provided by the application. You can open the <a href="/api-gw.html">api-gw.html</a> page for an example
+            that demonstrate an API call, either directly from to the backend (in which case only the
+            <code>Authorization</code> header is required) or to the current application (in which case both the
+            <code>Authorization</code> and the <code>Cookie</code> headers are required). Both call are initiated by the
+            User's browser (you can have a look at the <code>api-gw.html</code> javascript block).
+        </p>
+        <a href="{{ config.AWS_CONSOLE_BASE_URL }}/apigateway/main/apis" class="card-link">Open the AWS API GW
+            Console</a>
+    </div>
+</div>

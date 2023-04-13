@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<command xmlns="urn:schemas-pivotal-com/LifecycleServer51">
+    <systemName>{{system_name}}</systemName>
+    <loginType>Active Client</loginType>
+    <getFormData>
+        <formName>{{form_name}}</formName>
+        <recordId>{{record_id}}</recordId>
+    </getFormData>
+</command>

@@ -1,0 +1,166 @@
+#
+# This Open API definition aims to illustrate the integration
+# of a backedn microservice (or many), with an API GW.
+#
+# REF: https://swagger.io/specification/
+# REF: https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-swagger-extensions.html
+openapi: "3.0.1"
+info:
+  title: "mcrsrv"
+  description: "A simple API to illustrate API Gateway integration"
+  version: "1.0.0"
+servers:
+  # This server URL should be replaced with a custom domain name of the APIGW
+  - url: "https://hq5ick7fz3.execute-api.${region}.amazonaws.com/{basePath}"
+    variables:
+      basePath:
+        default: "${environment}"
+
+components:
+  schemas:
+    Empty:
+      title: "Empty Schema"
+      type: "object"
+    InvalidRequest:
+      type: object
+      properties:
+        message:
+          type: string
+    serviceItems:
+      type: array
+      items:
+        type: object
+        required:
+          - key
+        properties:
+          key:
+            type: string
+          value:
+            type: string
+    serviceItem:
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+  responses:
+    NotFound:
+      description: Not found
+    InvalidRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/InvalidRequest"
+  # REF: https://swagger.io/specification/#security-scheme-object
+  securitySchemes:
+    jwt-authorizer-oauth:
+      type: oauth2
+      flows:
+        # this must be kept in sync with what has been defined for Cognito
+        # REF: https://swagger.io/specification/#oauth-flows-object
+        password:
+          tokenUrl: "${token_url}"
+          scopes:
+            "read:microservice": "can read the microservice"
+            "write:microservice": "can write the microservice"
+      # REF: https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-swagger-extensions-authorizer.html
+      x-amazon-apigateway-authorizer:
+        type: jwt
+        jwtConfiguration:
+          issuer: https://cognito-idp.${region}.amazonaws.com/${cognito_user_pool_id} 
+          audience:
+            - ${cognito_user_pool_client_id}
+        identitySource: "$request.header.Authorization"
+
+  # These are the integration that connect the API Gateway to the different backend
+  x-amazon-apigateway-integrations:
+    vpc-link:
+      type: "http_proxy"
+      connectionType: "VPC_LINK"
+      connectionId: "${aws_apigatewayv2_vpc_link.vpc_link.id}"
+      httpMethod: "ANY"
+      uri: "${aws_lb_listener.listener.arn}"
+      payloadFormatVersion: "1.0"
+      requestParameters:
+        overwrite:path: "/$request.path.proxy"
+      responseParameters:
+        "500":
+          append:header.x-acme-backend-status: "500"
+        "404":
+          overwrite:header.x-acme-backend-status: "404"
+    # This integration is used specifically to allow the CORS OPTIONS call
+    # it forcefully redirect to the /health endpoint of the container.
+    vpc-link-cors-options:
+      type: "http_proxy"
+      connectionType: "VPC_LINK"
+      connectionId: "${aws_apigatewayv2_vpc_link.vpc_link.id}"
+      httpMethod: "GET"
+      uri: "${aws_lb_listener.listener.arn}"
+      payloadFormatVersion: "1.0"
+      requestParameters:
+        overwrite:path: "/health"
+      responseParameters:
+        "200":
+          append:header.x-acme-backend-status: "200"
+
+paths:
+  /{proxy}:
+    options:
+      parameters:
+        - name: "proxy"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      security: [] # Required for CORS preflight
+      x-amazon-apigateway-integration:
+        $ref: "#/components/x-amazon-apigateway-integrations/vpc-link-cors-options"
+    # Unfortunately, we can't use x-amazon-apigateway-any-method object because
+    # that will force to use the the defined security (jwt-authorizer-oauth), 
+    # which the preflight OPTIONS request do not allow :(
+    get:
+      parameters:
+        - name: "proxy"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      security:
+        - jwt-authorizer-oauth: []
+      x-amazon-apigateway-integration:
+        $ref: "#/components/x-amazon-apigateway-integrations/vpc-link"
+    post:
+      parameters:
+        - name: "proxy"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      security:
+        - jwt-authorizer-oauth: []
+      x-amazon-apigateway-integration:
+        $ref: "#/components/x-amazon-apigateway-integrations/vpc-link"
+    put:
+      parameters:
+        - name: "proxy"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      security:
+        - jwt-authorizer-oauth: []
+      x-amazon-apigateway-integration:
+        $ref: "#/components/x-amazon-apigateway-integrations/vpc-link"
+    delete:
+      parameters:
+        - name: "proxy"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      security:
+        - jwt-authorizer-oauth: []
+      x-amazon-apigateway-integration:
+        $ref: "#/components/x-amazon-apigateway-integrations/vpc-link"

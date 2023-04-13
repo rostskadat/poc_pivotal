@@ -1,0 +1,10 @@
+{
+  "requiresCompatibilities": ${requires_compatibilities},
+  "networkMode": "${network_mode}",
+  "cpu": "${cpu}",
+  "memory": "${memory}",
+  "taskRoleArn": "${task_role_arn}",
+  "executionRoleArn": "${execution_role_arn}",
+  "family": "${family}",
+  "containerDefinitions": ${container_definitions}
+}

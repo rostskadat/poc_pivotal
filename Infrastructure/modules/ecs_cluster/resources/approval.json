@@ -1,0 +1,10 @@
+{
+    "pipelineName": "${var.workload_name}-${var.environment}-deploy",
+    "stageName": "Deploy",
+    "actionName": "Approval",
+    "token": "1a2b3c4d-573f-4ea7-a67E-XAMPLETOKEN",
+    "result": {
+        "status": "Approved",
+        "summary": "${approval_message}."
+    }
+}

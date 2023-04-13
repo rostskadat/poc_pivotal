@@ -1,0 +1,6 @@
+FROM integration-tests-chrome-base:latest
+
+ENV APPPATH /app
+WORKDIR ${APPPATH}
+ADD . ${APPPATH}
+ENTRYPOINT [ "/app/main_test.py" ]

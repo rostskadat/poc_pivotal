@@ -1,0 +1,49 @@
+{% extends 'layouts/base.html' %}
+
+<!-- Do not change the title. Used for integration test -->
+{% block title %} HOME {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+<div class="container-fluid py-4">
+  <div class="row mb-4">
+    <div class="col-12 mb-4">
+      <!-- Do not change the div below. Used for integration test -->
+      <h2>Hello <span id="current_user">{{current_user}}</span></h2>
+    </div>
+  </div>
+  <div class="row mb-4">
+    <div class="col-4">
+      {% include "home/cards/description-card.html" %}
+    </div>
+    <div class="col-4">
+      {% include "home/cards/ecs-card.html" %}
+    </div>
+    <div class="col-4">
+      {% include "home/cards/cognito-card.html" %}
+    </div>
+
+  </div>
+  <div class="row mb-4">
+    <div class="col-4">
+      {% include "home/cards/apigw-card.html" %}
+    </div>
+    <div class="col-4">
+      {% include "home/cards/redis-card.html" %}
+    </div>
+    <div class="col-4">
+      {% include "home/cards/cicd-card.html" %}
+    </div>
+  </div>
+  <div class="row mb-4">
+    <div class="col-4">
+      {% include "home/cards/tests-card.html" %}
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+
+{% block javascripts %}{% endblock javascripts %}

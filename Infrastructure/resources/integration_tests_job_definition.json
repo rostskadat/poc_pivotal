@@ -1,0 +1,23 @@
+{
+  "image": "${image}",
+  "fargatePlatformConfiguration": {
+    "platformVersion": "LATEST"
+  },
+  "resourceRequirements": [
+    {
+      "type": "VCPU",
+      "value": "1"
+    },
+    {
+      "type": "MEMORY",
+      "value": "2048"
+    }
+  ],
+  "environment": [
+    {
+      "name": "BASE_URL",
+      "value": "${base_url}"
+    }
+  ],
+  "executionRoleArn": "${batch_task_execution_role_arn}"
+}

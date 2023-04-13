@@ -1,0 +1,46 @@
+{
+    "Version": "2012-10-17",
+    "Id": "AllowGetSecretValue",
+    "Statement": [
+      {
+        "Sid": "AllowGetSecretValue",
+        "Effect": "Allow",
+        "Action": [
+          "secretsmanager:GetSecretValue"
+        ],
+        "Resource": "${session_encryption_key_arn}"
+      },
+      {
+        "Sid": "AllowGetParameters",
+        "Effect": "Allow",
+        "Action": [
+          "ssm:GetParameter"
+        ],
+        "Resource": "*"
+      },
+      {
+        "Sid": "AllowGetECRImage",
+        "Effect": "Allow",
+        "Action": [
+          "ecr:GetAuthorizationToken",
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage",
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ],
+        "Resource": "*" 
+      },
+      {
+        "Sid": "AllowMountEFS",
+        "Effect": "Allow",
+        "Action": [
+          "elasticfilesystem:ClientMount",
+          "elasticfilesystem:ClientWrite"
+        ],
+        "Resource": "*" 
+      }    
+    ]
+  }
+  

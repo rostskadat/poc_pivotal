@@ -1,0 +1,17 @@
+<div class="card">
+    <div class="card-body p-3">
+        <h5 class="card-title">ECS + Flask Webapp</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Graphical UI</h6>
+        <p class="card-text">The <a
+               href="https://flask.palletsprojects.com/en/2.2.x/">Flask</a> application presents a
+            graphical user interface and allows to initiate the login flow. It runs as a Docker container in
+            an ECS Fargate cluster. It uses <a href="https://flask.palletsprojects.com/en/2.2.x/">Flask</a>
+            under the hood, for its simplicity and ease of use. Any containerizable application framework
+            would do. The ECS cluster is deployed from the Terraform module <code>ecs_cluster</code>. It is
+            important to note that the application is deployed using a Blue / Green deployment (more details
+            below).
+        </p>
+        <a href="https://eu-central-1.console.aws.amazon.com/ecs/v2/clusters" class="card-link">Open the AWS ECS
+            Console</a>
+    </div>
+</div>

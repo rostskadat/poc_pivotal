@@ -1,0 +1,42 @@
+[
+  {
+    "name": "PORT",
+    "value": "${application_port}"
+  },
+  {
+    "name": "AWS_DEFAULT_REGION",
+    "value": "${aws_default_region}"
+  },
+  {
+    "name": "AWS_COGNITO_DOMAIN",
+    "value": "${aws_cognito_domain}"
+  },
+  {
+    "name": "AWS_COGNITO_USER_POOL_ID",
+    "value": "${aws_cognito_user_pool_id}"
+  },
+  {
+    "name": "AWS_COGNITO_USER_POOL_CLIENT_ID",
+    "value": "${aws_cognito_user_pool_client_id}"
+  },
+  {
+    "name": "AWS_COGNITO_USER_POOL_CLIENT_SECRET",
+    "value": "${aws_cognito_user_pool_client_secret}"
+  },
+  {
+    "name": "AWS_COGNITO_REDIRECT_URL",
+    "value": "${aws_cognito_redirect_url}"
+  },
+  {
+    "name": "AWS_APIGW_BASE_URL",
+    "value": "${aws_apigw_base_url}"
+  },
+  {
+    "name": "SESSION_TYPE",
+    "value": "redis"
+  },
+  {
+    "name": "REDIS_URI",
+    "value": "${redis_uri}"
+  }
+]

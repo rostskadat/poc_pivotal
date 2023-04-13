@@ -1,0 +1,42 @@
+{
+    "widgets": [
+        {
+            "height": 14,
+            "width": 11,
+            "y": 0,
+            "x": 0,
+            "type": "metric",
+            "properties": {
+                "sparkline": true,
+                "view": "timeSeries",
+                "stacked": true,
+                "region": "${region}",
+                "metrics": [
+                    [ "AWS/RDS", "CPUUtilization", "DBInstanceIdentifier", "${src_replica_id}" ]
+                ],
+                "start": "-PT1H",
+                "end": "P0D",
+                "setPeriodToTimeRange": true,
+                "title": "CPU (SRC)"
+            }
+        },
+        {
+            "height": 14,
+            "width": 12,
+            "y": 0,
+            "x": 11,
+            "type": "metric",
+            "properties": {
+                "metrics": [
+                    [ "AWS/RDS", "CPUUtilization", "DBInstanceIdentifier", "${dst_replica_id}", { "color": "#ff7f0e" } ]
+                ],
+                "view": "timeSeries",
+                "stacked": true,
+                "region": "${region}",
+                "period": 300,
+                "stat": "Average",
+                "title": "CPU (DST)"
+            }
+        }
+    ]
+}

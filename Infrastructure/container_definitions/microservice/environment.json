@@ -1,0 +1,18 @@
+[
+  {
+    "name": "PORT",
+    "value": "${application_port}"
+  },
+  {
+    "name": "REGION",
+    "value": "${region}"
+  },
+  {
+    "name": "COGNITO_USER_POOL_ID",
+    "value": "${cognito_user_pool_id}"
+  },
+  {
+    "name": "COGNITO_USER_POOL_CLIENT_ID",
+    "value": "${cognito_user_pool_client_id}"
+  }
+]

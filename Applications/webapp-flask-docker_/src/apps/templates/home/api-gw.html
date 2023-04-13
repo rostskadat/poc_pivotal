@@ -1,0 +1,176 @@
+{% extends 'layouts/base.html' %}
+
+<!-- Do not change the title. Used for integration test -->
+{% block title %} APIGW {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-xl-12 col-sm-12 mb-xl-0 mb-4">
+      <div class="card">
+        <div class="card-body p-3">
+          <div class="row">
+            <p>This page shows 2 different mode of consuming the API GW</p>
+            <div>
+              <ul>
+                <li><b>Directly through API GW</b>: in this case, the client consume the API GW directly and uses the
+                  <code>access_token</code> that it stored during the login process. You can look at the code of this
+                  page to see how the call is actually made.
+                </li>
+                <li><b>Through the webapp</b>: in this case, the client consume an API published by the webapp itself.
+                  The webapp will reuse the credentials of the User <code>access_token</code> in order to call the API
+                  GW</li>
+              </ul>
+
+            </div>
+            <div><b>Directly through API GW</b>
+              <span>(<a href="{{microservice_url}}/headers">GET {{microservice_url}}/headers</a>)</span>
+              <div class="card-body pt-4 p-3">
+                <div id="through-apigw">Please wait ...</div>
+              </div>
+            </div>
+            <div><b>Through the webapp</b>
+              <span>(<a href="{{ url_for('home_blueprint.call_apigw') }}">GET
+                  {{ url_for('home_blueprint.call_apigw') }}</a>)</span>
+              <div class="card-body pt-4 p-3">
+                <div id="through-webapp">Please wait ...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+
+<script>
+
+  const access_token = /*localStorage.getItem('access_token') ||*/ '{{access_token}}'
+  let data = []
+  let requestAction = 'post' // for update/add record
+
+  // fetch data
+  fetch('{{microservice_url}}/headers', {
+    method: 'GET',
+    headers: { "Authorization": `Bearer ${access_token}` }
+  })
+    .then((response) => {
+      if (!response.ok)
+        return response.text().then(text => { throw new Error(text) })
+      else
+        return response.json()
+    })
+    .then((data) => {
+      const itemContainer = document.querySelector('#through-webapp');
+      itemContainer.innerHTML = `<code id="through-webapp-result">${JSON.stringify(data)}</code>`;
+    })
+    .catch((err) => {
+      console.log(err)
+    });
+  fetch("{{ url_for('home_blueprint.call_apigw') }}", {
+    method: 'GET',
+    headers: { "Authorization": `Bearer ${access_token}` }
+  })
+    .then((response) => {
+      if (!response.ok)
+        return response.text().then(text => { throw new Error(text) })
+      else
+        return response.json()
+    })
+    .then((data) => {
+      const itemContainer = document.querySelector('#through-apigw');
+      itemContainer.innerHTML = `<code id="through-apigw-result">${JSON.stringify(data)}</code>`;
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+
+  // create request
+  document.getElementById('create-form').onsubmit = (e) => {
+    e.preventDefault()
+    fetch('{{microservice_url}}', {
+      method: 'POST',
+      body: new FormData(e.target),
+      headers: { "Authorization": `Bearer ${access_token}` }
+    })
+      .then((response) => {
+        if (!response.ok)
+          return response.text().then(text => { throw new Error(text) })
+        else
+          return response.json()
+      })
+      .then((res) => {
+        console.log(res)
+        location.reload()
+      })
+      .catch((err) => {
+        document.getElementById('create-error').textContent = err
+      })
+  }
+
+  document.getElementById('edit-form').onsubmit = (e) => {
+    e.preventDefault()
+    const formData = new FormData(e.target)
+
+    fetch(`/api/books/${formData.get('id')}/`, {
+      method: 'PUT',
+      body: formData,
+      headers: { "Authorization": `Bearer ${access_token}` }
+    })
+      .then((response) => {
+        if (!response.ok)
+          return response.text().then(text => { throw new Error(text) })
+        else
+          return response.json()
+      })
+      .then((res) => {
+        console.log(res)
+        location.reload()
+      })
+      .catch((err) => {
+        document.getElementById('edit-error').textContent = err
+      })
+  }
+
+  document.querySelector('.list-group').addEventListener('click', (e) => {
+
+    if (e.target.nodeName === 'A') {
+      if (e.target.className.includes('edit')) {
+        editAction(e.target.id)
+        requestAction = 'put'
+      } else if (e.target.className.includes('delete'))
+        deleteAction(e.target.id)
+
+    }
+  })
+
+  const deleteAction = (id) => {
+    fetch(`{{microservice_url}}/${id}/`, {
+      method: 'DELETE',
+      headers: { "Authorization": `Bearer ${access_token}` }
+    }).then(response => response.json())
+      .then(res => {
+        location.reload()
+        console.log(res)
+      })
+      .catch(err => { console.log(err) })
+  }
+
+  const editAction = (id) => {
+    const item = data.filter(d => d.id.toString() === id)[0]
+    document.getElementById('edit_title').value = item.title
+    document.getElementById('edit_id').value = item.id
+  }
+
+</script>
+
+{% endblock javascripts %}

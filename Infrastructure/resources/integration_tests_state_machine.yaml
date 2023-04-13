@@ -1,0 +1,93 @@
+Comment: Calls a Lambda function when a Batch Job succeeds or fails.
+StartAt: Update test user credentials
+TimeoutSeconds: 500
+States:
+  Update test user credentials:
+    # REF: https://docs.aws.amazon.com/step-functions/latest/dg/connect-lambda.html
+    Type: Task
+    Resource: arn:aws:states:::lambda:invoke.waitForTaskToken
+    OutputPath: $.Payload
+    Parameters:
+      FunctionName: ${enable_test_user_lambda_name}
+      Payload:
+        Input.$: "$.Input"
+        Token.$: "$$.Task.Token"
+    Retry:
+      - ErrorEquals:
+          - Lambda.ServiceException
+          - Lambda.AWSLambdaException
+          - Lambda.SdkClientException
+          - Lambda.TooManyRequestsException
+        IntervalSeconds: 2
+        MaxAttempts: 6
+        BackoffRate: 2
+    Next: Launch integration tests
+    Comment: Enables the test user and updates its credentials in Cognito
+  Launch integration tests:
+    Type: Task
+    Resource: arn:aws:states:::batch:submitJob.sync
+    Parameters:
+      JobDefinition: ${job_definition}
+      JobName: ${job_name}
+      JobQueue: ${job_queue}
+      Parameters:
+        DeploymentId.$: $.Input.DeploymentId
+        LifecycleEventHookExecutionId.$: $.Input.LifecycleEventHookExecutionId
+      ContainerOverrides:
+        Environment:
+          - Name: COGNITO_USERNAME
+            Value: ${cognito_username}
+          - Name: COGNITO_PASSWORD
+            Value.$: $.Password
+    ResultPath: null
+    Next: Notify success
+    Catch:
+      - ErrorEquals:
+          - States.ALL
+        Next: Notify failure
+        Comment: >-
+          When the test fails we catch the error and proceed with the different
+          fail path actions
+    Comment: This job is in charge of the test of the deployment given as parameter.
+  Notify success:
+    Type: Task
+    Resource: arn:aws:states:::lambda:invoke
+    OutputPath: $.Payload
+    Parameters:
+      FunctionName: ${notify_codedeploy_lambda_name}
+      Payload:
+        DeploymentId.$: $.Input.DeploymentId
+        LifecycleEventHookExecutionId.$: $.Input.LifecycleEventHookExecutionId
+        Status: Succeeded
+    Retry:
+      - ErrorEquals:
+          - Lambda.ServiceException
+          - Lambda.AWSLambdaException
+          - Lambda.SdkClientException
+          - Lambda.TooManyRequestsException
+        IntervalSeconds: 2
+        MaxAttempts: 6
+        BackoffRate: 2
+    End: true
+    Comment: Disables the test user and notify CodeDeploy
+  Notify failure:
+    Type: Task
+    Resource: arn:aws:states:::lambda:invoke
+    OutputPath: $.Payload
+    Parameters:
+      FunctionName: ${notify_codedeploy_lambda_name}
+      Payload:
+        # REF: https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-intrinsic-functions.html#asl-intrsc-func-json-manipulate
+        Cause.$: States.StringToJson($.Cause)
+        Status: Failed
+    Retry:
+      - ErrorEquals:
+          - Lambda.ServiceException
+          - Lambda.AWSLambdaException
+          - Lambda.SdkClientException
+          - Lambda.TooManyRequestsException
+        IntervalSeconds: 2
+        MaxAttempts: 6
+        BackoffRate: 2
+    End: true
+    Comment: Disables the test user and notify CodeDeploy
